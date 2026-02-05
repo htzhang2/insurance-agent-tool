@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function Calculator() {
+export default function Calculator({gotoAgentPage}) {
   const [age, setAge] = useState("");
   const [incomeStart, setIncomeStart] = useState("");
   const [priority, setPriority] = useState("");
@@ -93,7 +93,9 @@ export default function Calculator() {
           </h3>
           <p>{result}</p>
 
-          <button className="mt-4 w-full border py-3 rounded-lg hover:bg-slate-100">
+          <button 
+            onClick={gotoAgentPage}
+            className="mt-4 w-full border py-3 rounded-lg hover:bg-slate-100">
             Talk to an Agent
           </button>
         </div>
