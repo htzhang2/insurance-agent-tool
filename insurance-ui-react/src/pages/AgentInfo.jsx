@@ -20,6 +20,10 @@ export default function AgentInfo() {
       </p>
 
       <br />
+      <p className="text-sm text-slate-600">
+        Book a time to chat with agent
+      </p>
+
       <DatePicker
         inline
         selected={selectedDate}
