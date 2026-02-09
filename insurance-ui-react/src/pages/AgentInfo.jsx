@@ -21,11 +21,10 @@ export default function AgentInfo() {
 
       <br />
       <DatePicker
+        inline
         selected={selectedDate}
         onChange={(date) => setSelectedDate(date)}
         minDate={new Date()}
-        placeholderText="Choose a date"
-        className="border px-3 py-2 rounded w-full bg-white text-black"
       />
     </div>
   );
