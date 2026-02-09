@@ -1,6 +1,11 @@
+import { useState } from "react";
+import DatePicker from "react-datepicker";
+
 export default function AgentInfo() {
+  const [selectedDate, setSelectedDate] = useState(null);
+
   return (
-    <div className="bg-white rounded-xl shadow p-6 space-y-4">
+    <div className="max-w-3xl mx-auto p-6">
       <h2 className="text-xl font-semibold">Michelle Sue - Your Licensed Agent</h2>
 
       <p>
@@ -13,6 +18,15 @@ export default function AgentInfo() {
         States: WA, CA <br />
         Educational use only. No guarantees or investment advice.
       </p>
+
+      <br />
+      <DatePicker
+        selected={selectedDate}
+        onChange={(date) => setSelectedDate(date)}
+        minDate={new Date()}
+        placeholderText="Choose a date"
+        className="border px-3 py-2 rounded w-full bg-white text-black"
+      />
     </div>
   );
 }

@@ -5,3 +5,11 @@
 body {
   @apply bg-slate-100 text-slate-800;
 }
+
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker__input-container input {
+  width: 100%;
+}
