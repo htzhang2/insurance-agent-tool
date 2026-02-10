@@ -3,6 +3,22 @@ import DatePicker from "react-datepicker";
 
 export default function AgentInfo() {
   const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(null);
+  const timeSlots = [
+    "9:00 AM",
+    "10:00 AM",
+    "11:00 AM",
+    "1:00 PM",
+    "2:00 PM",
+    "3:00 PM",
+    "4:00 PM",
+    "5:00 PM",
+  ];
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+    setSelectedTime(null); // reset time
+  };
 
   return (
     <div className="max-w-3xl mx-auto p-6">
@@ -20,16 +36,54 @@ export default function AgentInfo() {
       </p>
 
       <br />
-      <p className="text-sm text-slate-600">
+      <h4 className="mb-3 font-semibold">
         Book a time to chat with agent
-      </p>
+      </h4>
 
       <DatePicker
         inline
         selected={selectedDate}
-        onChange={(date) => setSelectedDate(date)}
+        onChange={handleDateChange}
         minDate={new Date()}
       />
+
+      {selectedDate && (
+      <div className="mt-6">
+        <h4 className="font-semibold mb-3">
+          Available times on{" "}
+          {selectedDate.toLocaleDateString()}
+        </h4>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          {timeSlots.map((time) => (
+            <button
+              key={time}
+              onClick={() => setSelectedTime(time)}
+              className={`
+                border rounded py-2 text-sm
+                ${
+                  selectedTime === time
+                    ? "bg-blue-600 text-white"
+                    : "bg-white hover:bg-gray-100"
+                }
+              `}
+            >
+              {time}
+            </button>
+          ))}
+        </div>
+      </div>
+      )}
+
+      {selectedDate && selectedTime && (
+        <div className="mt-4 text-green-700">
+          ✔ You selected{" "}
+          <strong>
+            {selectedDate.toLocaleDateString()} at {selectedTime}
+          </strong>
+        </div>
+      )}
+
     </div>
   );
 }
