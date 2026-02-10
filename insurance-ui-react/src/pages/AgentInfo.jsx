@@ -4,6 +4,8 @@ import DatePicker from "react-datepicker";
 export default function AgentInfo() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
+  const [confirmed, setConfirmed] = useState(false);
+
   const timeSlots = [
     "9:00 AM",
     "10:00 AM",
@@ -18,6 +20,13 @@ export default function AgentInfo() {
   const handleDateChange = (date) => {
     setSelectedDate(date);
     setSelectedTime(null); // reset time
+    console.log("Selected date:" + date);
+  };
+
+  const handleConfirm = () => {
+    setConfirmed(true);
+
+    // TODO: send backend
   };
 
   return (
@@ -81,6 +90,22 @@ export default function AgentInfo() {
           <strong>
             {selectedDate.toLocaleDateString()} at {selectedTime}
           </strong>
+        </div>
+      )}
+
+      {selectedDate && selectedTime && !confirmed && (
+        <button
+          onClick={handleConfirm}
+          className="mt-6 w-full bg-green-600 text-white py-3 rounded"
+        >
+          Confirm Appointment
+        </button>
+      )}
+
+      {confirmed && (
+        <div className="mt-6 bg-green-50 p-4 rounded">
+          <strong>Confirmed:</strong><br />
+          {selectedDate.toLocaleDateString()} at {selectedTime}
         </div>
       )}
 
