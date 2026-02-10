@@ -20,7 +20,13 @@ export default function AgentInfo() {
   const handleDateChange = (date) => {
     setSelectedDate(date);
     setSelectedTime(null); // reset time
+    setConfirmed(false);
     console.log("Selected date:" + date);
+  };
+
+  const handleTimeChange = (time) => {
+    setSelectedTime(time); // reset time
+    setConfirmed(false);
   };
 
   const handleConfirm = () => {
@@ -67,7 +73,7 @@ export default function AgentInfo() {
           {timeSlots.map((time) => (
             <button
               key={time}
-              onClick={() => setSelectedTime(time)}
+              onClick={()=>handleTimeChange(time)}
               className={`
                 border rounded py-2 text-sm
                 ${
