@@ -59,7 +59,7 @@ export default function AgentInfo() {
         inline
         selected={selectedDate}
         onChange={handleDateChange}
-        minDate={new Date()}
+        minDate={new Date(new Date().setDate(new Date().getDate() + 1))}
       />
 
       {selectedDate && (
