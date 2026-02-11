@@ -4,7 +4,9 @@ import DatePicker from "react-datepicker";
 export default function AgentInfo() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
-  const [confirmed, setConfirmed] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [booked, setBooked] = useState(false);
 
   const timeSlots = [
     "9:00 AM",
@@ -20,17 +22,26 @@ export default function AgentInfo() {
   const handleDateChange = (date) => {
     setSelectedDate(date);
     setSelectedTime(null); // reset time
-    setConfirmed(false);
+    setBooked(false);
     console.log("Selected date:" + date);
   };
 
   const handleTimeChange = (time) => {
     setSelectedTime(time); // reset time
-    setConfirmed(false);
+    setBooked(false);
   };
 
+  const isValidEmail = (email) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  
+  const canBook =
+    selectedDate &&
+    selectedTime &&
+    name.trim() !== "" &&
+    isValidEmail(email);
+
   const handleConfirm = () => {
-    setConfirmed(true);
+    setBooked(true);
 
     // TODO: send backend
   };
@@ -99,18 +110,44 @@ export default function AgentInfo() {
         </div>
       )}
 
-      {selectedDate && selectedTime && !confirmed && (
+      {selectedDate && selectedTime && (
+        <div className="mt-6 space-y-4">
+          <input
+            type="text"
+            placeholder="Your Full Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full border px-3 py-2 rounded"
+          />
+
+          <input
+            type="email"
+            placeholder="Your Email Address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full border px-3 py-2 rounded"
+          />
+
+          {email && !isValidEmail(email) && (
+            <p className="text-sm text-red-500 mt-1">
+              Please enter a valid email address
+            </p>
+          )}
+        </div>
+      )}
+
+      {canBook  && (
         <button
           onClick={handleConfirm}
           className="mt-6 w-full bg-green-600 text-white py-3 rounded"
         >
-          Confirm Appointment
+          Book Appointment
         </button>
       )}
 
-      {confirmed && (
+      {booked && (
         <div className="mt-6 bg-green-50 p-4 rounded">
-          <strong>Confirmed:</strong><br />
+          <strong>{name} Booked:</strong><br />
           {selectedDate.toLocaleDateString()} at {selectedTime}
         </div>
       )}
