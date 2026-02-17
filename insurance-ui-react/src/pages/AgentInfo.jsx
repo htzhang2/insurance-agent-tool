@@ -1,12 +1,14 @@
 import { useState } from "react";
 import DatePicker from "react-datepicker";
+import axios from "axios";
 
 export default function AgentInfo() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [booked, setBooked] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [bookMessage, setBookMessage] = useState("");
 
   const timeSlots = [
     "9:00 AM",
@@ -22,13 +24,13 @@ export default function AgentInfo() {
   const handleDateChange = (date) => {
     setSelectedDate(date);
     setSelectedTime(null); // reset time
-    setBooked(false);
+    setBookMessage("");
     console.log("Selected date:" + date);
   };
 
   const handleTimeChange = (time) => {
     setSelectedTime(time); // reset time
-    setBooked(false);
+    setBookMessage("");
   };
 
   const isValidEmail = (email) =>
@@ -37,13 +39,54 @@ export default function AgentInfo() {
   const canBook =
     selectedDate &&
     selectedTime &&
+    !loading &&
     name.trim() !== "" &&
     isValidEmail(email);
 
-  const handleConfirm = () => {
-    setBooked(true);
+  const handleBook = async () => {
+    setLoading(true);
 
-    // TODO: send backend
+    // call backend api to book
+    try {
+      const [hours, rawMinutes] = selectedTime.split(":");
+      const [minutes, amPm] = rawMinutes.split(" ");
+
+      const bookDateTime = new Date(selectedDate);
+      bookDateTime.setHours(hours);
+      bookDateTime.setMinutes(minutes);
+      bookDateTime.setSeconds(0);
+      const payload =  {
+          fromName: name,
+          fromEmail: email,
+          appointmentDateTime: bookDateTime.toISOString(),
+      };
+      const config = {
+        headers: {
+            "Content-Type": "application/json",
+        },
+        timeout: 10000 // 10 seconds
+      };
+      const res = await axios.post(
+        "https://localhost:7195/InsuranceApi/api/booking",
+        payload,
+        config
+      );
+      
+      setBookMessage("✅ Sent book request successfully!");
+    } catch(error) {
+      console.error(error);
+      if (error.code === "ECONNABORTED") {
+        setBookMessage("❌ Request timed out. Please try again.");
+      } else if (error.code === "ERR_NETWORK") {
+        setBookMessage("❌ Backend service down.");
+      } else {
+        setBookMessage("❌ Failed to send book request.");
+      }
+      
+    } finally {
+      setLoading(false);
+    }
+
   };
 
   return (
@@ -138,17 +181,18 @@ export default function AgentInfo() {
 
       {canBook  && (
         <button
-          onClick={handleConfirm}
+          onClick={handleBook}
+          disabled={loading}
           className="mt-6 w-full bg-green-600 text-white py-3 rounded"
         >
-          Book Appointment
+          {loading ? "Booking..." : "Book Appointment"}
         </button>
+
       )}
 
-      {booked && (
+      {bookMessage && (
         <div className="mt-6 bg-green-50 p-4 rounded">
-          <strong>{name} Booked:</strong><br />
-          {selectedDate.toLocaleDateString()} at {selectedTime}
+          <p>{bookMessage}</p>
         </div>
       )}
 
