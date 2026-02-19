@@ -2,13 +2,19 @@ import { useState } from "react";
 import DatePicker from "react-datepicker";
 import axios from "axios";
 
+interface BookingPayload {
+  fromName: string;
+  fromEmail: string;
+  appointmentDateTime: string;
+}
+
 export default function AgentInfo() {
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedTime, setSelectedTime] = useState(null);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [bookMessage, setBookMessage] = useState("");
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedTime, setSelectedTime] = useState<string>("");
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [bookMessage, setBookMessage] = useState<string>("");
 
   const timeSlots = [
     "9:00 AM",
@@ -21,19 +27,19 @@ export default function AgentInfo() {
     "5:00 PM",
   ];
 
-  const handleDateChange = (date) => {
+  const handleDateChange = (date: Date | null): void => {
     setSelectedDate(date);
-    setSelectedTime(null); // reset time
+    setSelectedTime(""); // reset time
     setBookMessage("");
     console.log("Selected date:" + date);
   };
 
-  const handleTimeChange = (time) => {
+  const handleTimeChange = (time: string): void => {
     setSelectedTime(time); // reset time
     setBookMessage("");
   };
 
-  const isValidEmail = (email) =>
+  const isValidEmail = (email:string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   
   const canBook =
@@ -44,6 +50,10 @@ export default function AgentInfo() {
     isValidEmail(email);
 
   const handleBook = async () => {
+    if (!selectedDate || !selectedTime) {
+      return;
+    }
+
     setLoading(true);
 
     // call backend api to book
@@ -52,10 +62,10 @@ export default function AgentInfo() {
       const [minutes, amPm] = rawMinutes.split(" ");
 
       const bookDateTime = new Date(selectedDate);
-      bookDateTime.setHours(hours);
-      bookDateTime.setMinutes(minutes);
+      bookDateTime.setHours(Number(hours));
+      bookDateTime.setMinutes(Number(minutes));
       bookDateTime.setSeconds(0);
-      const payload =  {
+      const payload: BookingPayload =  {
           fromName: name,
           fromEmail: email,
           appointmentDateTime: bookDateTime.toISOString(),
@@ -73,7 +83,7 @@ export default function AgentInfo() {
       );
       
       setBookMessage("✅ Sent book request successfully!");
-    } catch(error) {
+    } catch(error: any) {
       console.error(error);
       if (error.code === "ECONNABORTED") {
         setBookMessage("❌ Request timed out. Please try again.");
