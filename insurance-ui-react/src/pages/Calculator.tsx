@@ -1,10 +1,14 @@
 import { useState } from "react";
 
-export default function Calculator({gotoAgentPage}) {
-  const [age, setAge] = useState("");
-  const [incomeStart, setIncomeStart] = useState("");
-  const [priority, setPriority] = useState("");
-  const [result, setResult] = useState("");
+interface CalculatorProps {
+  gotoAgentPage: () => void;
+}
+
+export default function Calculator({gotoAgentPage}: CalculatorProps) {
+  const [age, setAge] = useState<string>("");
+  const [incomeStart, setIncomeStart] = useState<string>("");
+  const [priority, setPriority] = useState<string>("");
+  const [result, setResult] = useState<string>("");
 
   const analyze = () => {
     if (!age || !incomeStart || !priority) {
