@@ -6,6 +6,10 @@ body {
   @apply bg-slate-100 text-slate-800;
 }
 
+.react-datepicker {
+  font-size: 1.1rem;
+}
+
 .react-datepicker-wrapper {
   width: 100%;
 }
